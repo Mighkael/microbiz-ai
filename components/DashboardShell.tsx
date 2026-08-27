@@ -20,6 +20,7 @@ import NewsPanel from "./NewsPanel";
 import OpportunitiesPanel from "./OpportunitiesPanel";
 import LocationInsight from "./LocationInsight";
 import Markdown from "./Markdown";
+import Copyright from "./Copyright";
 
 /* ---------- tabs ---------- */
 function Dashboard({ p, m }: { p: Profile; m: Metrics }) {
@@ -418,7 +419,7 @@ export default function DashboardShell({ profile }: { profile: Profile }) {
         {tab === "news" && <NewsPanel p={profile} />}
         {tab === "opp" && <OpportunitiesPanel p={profile} />}
         <div style={{ fontSize: 11.5, color: C.mist, marginTop: 28, borderTop: `1px solid ${C.line}`, paddingTop: 12 }}>
-          MicroBiz AI · estimates based on your inputs and industry averages · educational tool, not financial, legal, tax, or investment advice.
+          <Copyright /> · estimates based on your inputs and industry averages · educational tool, not financial, legal, tax, or investment advice.
         </div>
       </main>
     </div>

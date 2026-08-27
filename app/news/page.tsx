@@ -5,6 +5,7 @@ import { DEFAULT_PROFILE } from "@/lib/data";
 import { useProfileContext } from "@/components/ProfileProvider";
 import NewsPanel from "@/components/NewsPanel";
 import OpportunitiesPanel from "@/components/OpportunitiesPanel";
+import Copyright from "@/components/Copyright";
 
 export default function NewsPage() {
   const { profile: saved } = useProfileContext();
@@ -21,6 +22,9 @@ export default function NewsPage() {
       <div style={{ display: "grid", gap: 20 }}>
         <NewsPanel p={profile} />
         <OpportunitiesPanel p={profile} />
+      </div>
+      <div style={{ fontSize: 11.5, color: C.mist, marginTop: 28, borderTop: `1px solid ${C.line}`, paddingTop: 12 }}>
+        <Copyright /> · educational tool, not financial, legal, tax, or investment advice.
       </div>
     </div>
   );

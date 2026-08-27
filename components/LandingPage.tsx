@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Sparkles, BarChart3, Bot, ChevronRight, ShieldCheck, TrendingUp, Users } from "lucide-react";
 import { C, FONT_HEAD } from "@/lib/theme";
 import { Btn, Card, ScoreRing } from "./ui";
+import Copyright from "./Copyright";
 
 const MISSION = [
   {
@@ -183,6 +184,7 @@ export default function LandingPage() {
         <div style={{ maxWidth: 1160, margin: "0 auto", padding: "20px 24px", fontSize: 12.5, color: C.mist }}>
           MicroBiz AI — business intelligence for small operators, and a bet that stronger local businesses make safer neighborhoods.
           Educational tool, not financial, legal, tax, or investment advice.
+          <div style={{ marginTop: 6 }}><Copyright /></div>
         </div>
       </footer>
     </div>

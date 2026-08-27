@@ -10,6 +10,7 @@ import { askAdvisor } from "@/lib/api";
 import { Card, Btn, inputStyle } from "@/components/ui";
 import { useProfileContext } from "@/components/ProfileProvider";
 import Markdown from "@/components/Markdown";
+import Copyright from "@/components/Copyright";
 
 export default function AskPage() {
   const { profile: saved } = useProfileContext();
@@ -64,6 +65,9 @@ export default function AskPage() {
           <Btn tone="green" onClick={() => send(input)} disabled={busy}><Send size={15} /></Btn>
         </div>
       </Card>
+      <div style={{ fontSize: 11.5, color: C.mist, marginTop: 20 }}>
+        <Copyright /> · educational tool, not financial, legal, tax, or investment advice.
+      </div>
     </div>
   );
 }

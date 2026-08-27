@@ -11,6 +11,7 @@ import { Card, Btn, Field, inputStyle } from "./ui";
 import { useProfileContext } from "./ProfileProvider";
 import { useAuth } from "./AuthProvider";
 import LocationInsight from "./LocationInsight";
+import Copyright from "./Copyright";
 
 export default function AssessmentForm() {
   const router = useRouter();
@@ -117,6 +118,7 @@ export default function AssessmentForm() {
 
       <p style={{ color: C.mist, fontSize: 12, marginTop: 16 }}>
         Estimates only — MicroBiz AI is an educational tool, not financial, legal, or investment advice.
+        <br /><Copyright />
       </p>
     </div>
   );
