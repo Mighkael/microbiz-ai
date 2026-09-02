@@ -1,6 +1,13 @@
 import type { Profile, Metrics, ChatMessage } from "./data";
 
-export async function askAdvisor(profile: Profile, metrics: Metrics, message: string, history: ChatMessage[]): Promise<string> {
+/** Which data engines the assistant consulted to answer (§12). */
+export type Evidence = { tool: string; input: Record<string, unknown> };
+
+export type AdvisorReply = { reply: string; evidence: Evidence[] };
+
+export async function askAdvisor(
+  profile: Profile, metrics: Metrics, message: string, history: ChatMessage[],
+): Promise<AdvisorReply> {
   const res = await fetch("/api/advisor", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -8,7 +15,7 @@ export async function askAdvisor(profile: Profile, metrics: Metrics, message: st
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Advisor request failed.");
-  return data.reply as string;
+  return { reply: data.reply as string, evidence: (data.evidence ?? []) as Evidence[] };
 }
 
 export type Source = { url: string; title: string };

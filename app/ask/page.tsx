@@ -5,11 +5,13 @@ import { Send, RefreshCw } from "lucide-react";
 import { C, FONT_HEAD } from "@/lib/theme";
 import { DEFAULT_PROFILE } from "@/lib/data";
 import type { ChatMessage } from "@/lib/data";
+import type { Evidence } from "@/lib/api";
 import { useMetrics } from "@/lib/useMetrics";
 import { askAdvisor } from "@/lib/api";
 import { Card, Btn, inputStyle } from "@/components/ui";
 import { useProfileContext } from "@/components/ProfileProvider";
 import Markdown from "@/components/Markdown";
+import EvidenceTrail from "@/components/EvidenceTrail";
 import Copyright from "@/components/Copyright";
 
 export default function AskPage() {
@@ -17,6 +19,7 @@ export default function AskPage() {
   const profile = saved ?? DEFAULT_PROFILE;
   const m = useMetrics(profile);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [evidence, setEvidence] = useState<Record<number, Evidence[]>>({});
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -25,8 +28,12 @@ export default function AskPage() {
     const history = messages;
     setMessages([...history, { role: "user", text }]); setInput(""); setBusy(true);
     try {
-      const reply = await askAdvisor(profile, m, text, history);
-      setMessages((cur) => [...cur, { role: "ai", text: reply || "No response — please try again." }]);
+      const { reply, evidence: used } = await askAdvisor(profile, m, text, history);
+      setMessages((cur) => {
+        const next = [...cur, { role: "ai" as const, text: reply || "No response — please try again." }];
+        setEvidence((e) => ({ ...e, [next.length - 1]: used }));
+        return next;
+      });
     } catch (err) {
       setMessages((cur) => [...cur, { role: "ai", text: err instanceof Error ? err.message : "Connection error. Please try again." }]);
     }
@@ -55,6 +62,7 @@ export default function AskPage() {
               borderRadius: 10, padding: "10px 14px", fontSize: 14, lineHeight: 1.5,
             }}>
               {mm.role === "ai" ? <Markdown>{mm.text}</Markdown> : <span style={{ whiteSpace: "pre-wrap" }}>{mm.text}</span>}
+              {mm.role === "ai" && <EvidenceTrail evidence={evidence[i] ?? []} />}
             </div>
           ))}
           {busy && <div style={{ color: C.mist, fontSize: 13 }}><RefreshCw size={13} style={{ verticalAlign: -2 }} className="spin" /> Thinking…</div>}

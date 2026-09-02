@@ -14,13 +14,14 @@ import { C, FONT_HEAD, FONT_MONO, FONT_BODY, NAV_H, fmt, pct } from "@/lib/theme
 import { FUNDING, BANKS, WORLD } from "@/lib/data";
 import type { Profile, Metrics, ChatMessage } from "@/lib/data";
 import { useMetrics } from "@/lib/useMetrics";
-import { askAdvisor } from "@/lib/api";
+import { askAdvisor, type Evidence } from "@/lib/api";
 import { Card, H, Label, Mono, Btn, ScoreRing, inputStyle } from "./ui";
 import NewsPanel from "./NewsPanel";
 import OpportunitiesPanel from "./OpportunitiesPanel";
 import LocationInsight from "./LocationInsight";
 import Markdown from "./Markdown";
 import BenchmarkPanel from "./BenchmarkPanel";
+import EvidenceTrail from "./EvidenceTrail";
 import Copyright from "./Copyright";
 
 /* ---------- tabs ---------- */
@@ -226,6 +227,7 @@ function Risk({ m }: { m: Metrics }) {
 
 function Advisor({ p, m }: { p: Profile; m: Metrics }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [evidence, setEvidence] = useState<Record<number, Evidence[]>>({});
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -242,8 +244,12 @@ function Advisor({ p, m }: { p: Profile; m: Metrics }) {
     const history = messages;
     setMessages([...history, { role: "user", text }]); setInput(""); setBusy(true);
     try {
-      const reply = await askAdvisor(p, m, text, history);
-      setMessages((cur) => [...cur, { role: "ai", text: reply || "No response — please try again." }]);
+      const { reply, evidence: used } = await askAdvisor(p, m, text, history);
+      setMessages((cur) => {
+        const next = [...cur, { role: "ai" as const, text: reply || "No response — please try again." }];
+        setEvidence((e) => ({ ...e, [next.length - 1]: used }));
+        return next;
+      });
     } catch (err) {
       setMessages((cur) => [...cur, { role: "ai", text: err instanceof Error ? err.message : "Connection error. Please try again." }]);
     }
@@ -275,6 +281,7 @@ function Advisor({ p, m }: { p: Profile; m: Metrics }) {
               borderRadius: 10, padding: "10px 14px", fontSize: 14, lineHeight: 1.5,
             }}>
               {mm.role === "ai" ? <Markdown>{mm.text}</Markdown> : <span style={{ whiteSpace: "pre-wrap" }}>{mm.text}</span>}
+              {mm.role === "ai" && <EvidenceTrail evidence={evidence[i] ?? []} />}
             </div>
           ))}
           {busy && <div style={{ color: C.mist, fontSize: 13 }}><RefreshCw size={13} style={{ verticalAlign: -2 }} className="spin" /> Advisor is thinking…</div>}
