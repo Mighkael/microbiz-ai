@@ -22,4 +22,20 @@ body {
 
 @media (max-width: 860px) {
   .hero-grid { grid-template-columns: 1fr !important; }
+  /* V2 mission band stacks before its two columns get too narrow */
+  .mb-mission { grid-template-columns: 1fr !important; gap: 24px !important; }
+}
+
+/* V2 header: the three-column grid (nav / logo / auth) collapses to a
+   centred stack once the side clusters would start colliding. */
+@media (max-width: 900px) {
+  /* Stacked header needs to grow past the fixed desktop height */
+  .mb-header { height: auto !important; position: static !important; }
+  .mb-nav {
+    grid-template-columns: 1fr !important;
+    justify-items: center;
+    gap: 6px !important;
+    padding: 10px 16px !important;
+  }
+  .mb-nav > nav { justify-content: center; }
 }
