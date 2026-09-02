@@ -5,14 +5,14 @@ const MODULES: Module[] = [
   {
     Icon: FileSearch,
     title: "Feasibility & Viability Study",
-    body: "Thinking of starting a business? Market size, competition, startup costs and a viability outlook for your chosen location.",
-    phase: "Phase 5",
+    body: "Thinking of starting a business? Test your revenue, staffing and capital assumptions against what the market actually supports.",
+    href: "/research/feasibility",
   },
   {
     Icon: GitCompare,
     title: "Market Comparison",
-    body: "Put two or three markets side by side — trade activity, demographics, competition and cost — and see which is stronger for your plan.",
-    phase: "Phase 5",
+    body: "Put two or three markets side by side and see which is stronger for your plan.",
+    href: "/business/locations",
   },
   {
     Icon: FlaskConical,
