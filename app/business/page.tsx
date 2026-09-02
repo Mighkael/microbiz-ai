@@ -32,8 +32,8 @@ const MODULES: Module[] = [
   {
     Icon: SlidersHorizontal,
     title: "Scenario Simulator",
-    body: "Change pricing, wages, volume or location and see the effect side by side against your current position.",
-    phase: "Phase 6",
+    body: "Change pricing, staffing, volume or costs and see the effect side by side against your current position.",
+    href: "/business/scenarios",
   },
   {
     Icon: Truck,

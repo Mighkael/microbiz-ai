@@ -39,3 +39,15 @@ body {
   }
   .mb-nav > nav { justify-content: center; }
 }
+
+/* Print / Save-as-PDF (§17). Strips the app chrome so a printed report is
+   the content, not a screenshot of a website. */
+@media print {
+  .no-print { display: none !important; }
+  header, nav, footer { display: none !important; }
+  body { background: #fff !important; }
+  .print-area { display: block !important; }
+  /* Cards shouldn't be split across a page break mid-table. */
+  .print-area > * { break-inside: avoid; page-break-inside: avoid; margin-bottom: 16px; }
+  a[href]::after { content: ""; }
+}

@@ -1,8 +1,10 @@
 import React from "react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 
-export const Card = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
-  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 20, ...style }}>{children}</div>
+export const Card = ({ children, style, className }: {
+  children: React.ReactNode; style?: React.CSSProperties; className?: string;
+}) => (
+  <div className={className} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 20, ...style }}>{children}</div>
 );
 
 export const H = ({ children, size = 18, style }: { children: React.ReactNode; size?: number; style?: React.CSSProperties }) => (
