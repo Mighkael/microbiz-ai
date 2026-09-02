@@ -20,8 +20,8 @@ const MODULES: Module[] = [
   {
     Icon: MapPin,
     title: "Location Intelligence",
-    body: "Population, income, business density, competition and demand indicators for any ZIP, city, county or state.",
-    phase: "Phase 4",
+    body: "Score and compare markets on spending power, what businesses there earn, room in the market, and growth.",
+    href: "/business/locations",
   },
   {
     Icon: Users,
