@@ -23,6 +23,13 @@ export default function LocationMap({ lat, lon, label, highlight }: {
           maxZoom: 18,
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(mapRef.current);
+
+        // Leaflet 1.9 ships a Ukrainian flag beside its name in the
+        // attribution, which reads as though the map itself is of Ukraine.
+        // Keep the credit (OpenStreetMap's licence requires it), drop the flag.
+        mapRef.current.attributionControl.setPrefix(
+          '<a href="https://leafletjs.com" title="A JavaScript library for interactive maps">Leaflet</a>',
+        );
       }
 
       mapRef.current.setView([lat, lon], 12);
