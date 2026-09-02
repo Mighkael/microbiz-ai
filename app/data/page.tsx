@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Table, LineChart, Layers, Download } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import MarketSnapshot from "@/components/MarketSnapshot";
@@ -19,14 +20,14 @@ const COMING = [
   {
     Icon: LineChart,
     title: "Time Series",
-    body: "How a market or industry has changed — employment, wages and business counts over time, from BLS.",
-    phase: "Phase 8",
+    body: "How a market or industry has changed — businesses, employment, payroll and population, 2017 onward.",
+    href: "/research/data-lab",
   },
   {
     Icon: Download,
     title: "Download",
-    body: "Export any view with its source attribution, vintage and methodology attached.",
-    phase: "Phase 8",
+    body: "Export any extract to CSV or Word with its source attribution, vintage and methodology attached.",
+    href: "/research/data-lab",
   },
 ];
 
@@ -53,29 +54,37 @@ export default function DataPage() {
       <h2 style={{
         fontFamily: FONT_HEAD, fontSize: 18, fontWeight: 600, color: C.ink,
         margin: "44px 0 4px",
-      }}>Coming next</h2>
+      }}>More in the Data Lab</h2>
       <p style={{ color: C.mist, fontSize: 13.5, margin: "0 0 18px" }}>
-        Built on the same data layer, in the order set out in the V2 plan.
+        Built on the same data layer. Live tools open the Data Lab; the rest are still to come.
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 14 }}>
-        {COMING.map(({ Icon, title, body, phase }) => (
-          <div key={title} style={{
-            background: C.paper, border: `1px solid ${C.line}`, borderRadius: 12,
-            padding: 18, display: "flex", flexDirection: "column", gap: 7,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-              <Icon size={19} color={C.mist} />
-              <span style={{
-                fontFamily: FONT_MONO, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase",
-                color: C.mist, background: "#fff", border: `1px solid ${C.line}`,
-                borderRadius: 999, padding: "3px 9px", whiteSpace: "nowrap",
-              }}>{phase}</span>
+        {COMING.map(({ Icon, title, body, phase, href }) => {
+          const card = (
+            <div style={{
+              background: href ? "#fff" : C.paper, border: `1px solid ${C.line}`, borderRadius: 12,
+              padding: 18, height: "100%", boxSizing: "border-box",
+              display: "flex", flexDirection: "column", gap: 7,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <Icon size={19} color={href ? C.ledger : C.mist} />
+                {!href && phase && (
+                  <span style={{
+                    fontFamily: FONT_MONO, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase",
+                    color: C.mist, background: "#fff", border: `1px solid ${C.line}`,
+                    borderRadius: 999, padding: "3px 9px", whiteSpace: "nowrap",
+                  }}>{phase}</span>
+                )}
+              </div>
+              <div style={{ fontFamily: FONT_HEAD, fontWeight: 600, fontSize: 15, color: C.ink }}>{title}</div>
+              <div style={{ fontSize: 13, color: C.mist, lineHeight: 1.55 }}>{body}</div>
             </div>
-            <div style={{ fontFamily: FONT_HEAD, fontWeight: 600, fontSize: 15, color: C.ink }}>{title}</div>
-            <div style={{ fontSize: 13, color: C.mist, lineHeight: 1.55 }}>{body}</div>
-          </div>
-        ))}
+          );
+          return href
+            ? <Link key={title} href={href} style={{ textDecoration: "none" }}>{card}</Link>
+            : <div key={title}>{card}</div>;
+        })}
       </div>
 
       <div style={{ fontSize: 11.5, color: C.mist, marginTop: 40, borderTop: `1px solid ${C.line}`, paddingTop: 14 }}>

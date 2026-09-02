@@ -26,8 +26,8 @@ const MODULES: Module[] = [
   {
     Icon: Users,
     title: "Benchmarking",
-    body: "Compare your performance against similar businesses nationally, by state, county, city or ZIP code.",
-    phase: "Phase 3",
+    body: "See where you stand against businesses in your sector — by county, state or nationwide.",
+    href: "/dashboard",
   },
   {
     Icon: SlidersHorizontal,

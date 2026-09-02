@@ -17,14 +17,14 @@ const MODULES: Module[] = [
   {
     Icon: FlaskConical,
     title: "Data Lab",
-    body: "For researchers, consultants and institutions: indicator-level exploration across geography, sector and time.",
-    phase: "Phase 8",
+    body: "Year-by-year figures on businesses, employment, payroll, population and income — by sector and geography.",
+    href: "/research/data-lab",
   },
   {
     Icon: FileText,
     title: "Report Builder",
-    body: "Turn selected data and charts into a structured report with sources, methodology and limitations, exportable to PDF and Word.",
-    phase: "Phase 8",
+    body: "Export any Data Lab extract to Word or CSV with its sources, methodology and limitations attached.",
+    href: "/research/data-lab",
   },
 ];
 
