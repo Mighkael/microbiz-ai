@@ -38,14 +38,14 @@ const MODULES: Module[] = [
   {
     Icon: Truck,
     title: "Sourcing & Supply Chain",
-    body: "Where supplier industries cluster, how far away they are, and estimated delivered cost.",
-    phase: "Phase 9",
+    body: "Where supplier industries cluster, how far away they are, and what freight would add.",
+    href: "/business/sourcing",
   },
   {
     Icon: Landmark,
     title: "Financing Finder",
-    body: "Match your profile against federal, state and local funding programs.",
-    phase: "Phase 9",
+    body: "Live federal funding opportunities open to small businesses, from Grants.gov.",
+    href: "/business/financing",
   },
   {
     Icon: Lightbulb,

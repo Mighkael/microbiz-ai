@@ -31,16 +31,16 @@ export const Btn = ({ children, onClick, tone = "dark", disabled, style }: {
   }}>{children}</button>
 );
 
-export function ScoreRing({ score }: { score: number }) {
+export function ScoreRing({ score, caption = "HEALTH SCORE" }: { score: number; caption?: string }) {
   const r = 54, circ = 2 * Math.PI * r;
   const color = score >= 70 ? C.ledger : score >= 45 ? C.signal : C.alert;
   return (
-    <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label={`Business health score ${score} out of 100`}>
+    <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label={`${caption.toLowerCase()} ${score} out of 100`}>
       <circle cx="70" cy="70" r={r} fill="none" stroke={C.line} strokeWidth="12" />
       <circle cx="70" cy="70" r={r} fill="none" stroke={color} strokeWidth="12" strokeLinecap="round"
         strokeDasharray={`${(score / 100) * circ} ${circ}`} transform="rotate(-90 70 70)" />
       <text x="70" y="66" textAnchor="middle" style={{ fontFamily: FONT_MONO, fontSize: 30, fontWeight: 700, fill: C.ink }}>{score}</text>
-      <text x="70" y="88" textAnchor="middle" style={{ fontFamily: FONT_HEAD, fontSize: 11, fill: C.mist }}>HEALTH SCORE</text>
+      <text x="70" y="88" textAnchor="middle" style={{ fontFamily: FONT_HEAD, fontSize: 9.5, fill: C.mist }}>{caption}</text>
     </svg>
   );
 }

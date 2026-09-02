@@ -37,7 +37,7 @@ function Dashboard({ p, m }: { p: Profile; m: Metrics }) {
   ];
   const kpis = [
     { label: "Net profit (annual)", value: fmt(m.profit), good: m.profit >= 0 },
-    { label: "Net margin", value: pct(m.margin), sub: `industry avg ~${pct(m.bench.margin)}`, good: m.margin >= m.bench.margin },
+    { label: "Net margin", value: pct(m.margin), sub: `est. industry avg ~${pct(m.bench.margin)}`, good: m.margin >= m.bench.margin },
     { label: "Monthly cash flow", value: fmt(m.mCash), good: m.mCash >= 0 },
     { label: "Revenue per employee", value: fmt(m.revPerEmp), good: true },
   ];
@@ -45,9 +45,17 @@ function Dashboard({ p, m }: { p: Profile; m: Metrics }) {
     <div style={{ display: "grid", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 16, alignItems: "stretch" }}>
         <Card style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <ScoreRing score={m.score} />
-          <div style={{ fontSize: 12, color: C.mist, marginTop: 6, textAlign: "center", maxWidth: 160 }}>
-            Blends margin vs. industry, cash flow, reserves, and business age.
+          <ScoreRing score={m.score} caption="SELF-ASSESSMENT" />
+          <div style={{ fontSize: 12, color: C.mist, marginTop: 6, textAlign: "center", maxWidth: 190, lineHeight: 1.5 }}>
+            Built from the figures you entered, weighed against MicroBiz AI&apos;s own industry estimates — not
+            published data.
+          </div>
+          <div style={{
+            fontSize: 11.5, marginTop: 10, textAlign: "center", maxWidth: 190,
+            lineHeight: 1.5, color: C.mist, borderTop: `1px solid ${C.line}`, paddingTop: 9,
+          }}>
+            For a score measured against real Census figures for your sector and area, see{" "}
+            <b style={{ color: C.ledger }}>Where You Stand</b>.
           </div>
         </Card>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(170px,1fr))", gap: 16 }}>
