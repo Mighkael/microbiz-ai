@@ -8,7 +8,7 @@ import {
 } from "recharts";
 import {
   LayoutDashboard, Calculator, ShieldAlert, Sparkles, Landmark, Newspaper,
-  Rocket, TrendingUp, TrendingDown, RefreshCw, Send, Globe2,
+  Rocket, TrendingUp, TrendingDown, RefreshCw, Send, Globe2, Users,
 } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO, FONT_BODY, NAV_H, fmt, pct } from "@/lib/theme";
 import { FUNDING, BANKS, WORLD } from "@/lib/data";
@@ -20,6 +20,7 @@ import NewsPanel from "./NewsPanel";
 import OpportunitiesPanel from "./OpportunitiesPanel";
 import LocationInsight from "./LocationInsight";
 import Markdown from "./Markdown";
+import BenchmarkPanel from "./BenchmarkPanel";
 import Copyright from "./Copyright";
 
 /* ---------- tabs ---------- */
@@ -347,6 +348,7 @@ function Funding({ p, m }: { p: Profile; m: Metrics }) {
 /* ---------- shell ---------- */
 const TABS = [
   { id: "dash", label: "Dashboard", icon: LayoutDashboard },
+  { id: "bench", label: "Where You Stand", icon: Users },
   { id: "fin", label: "Financials", icon: Calculator },
   { id: "risk", label: "Risk", icon: ShieldAlert },
   { id: "ai", label: "AI Advisor", icon: Sparkles },
@@ -412,6 +414,7 @@ export default function DashboardShell({ profile }: { profile: Profile }) {
           <div style={{ fontSize: 13, color: C.mist }}>{profile.industry} · {m.emp} employee{m.emp === 1 ? "" : "s"} · {m.age} yr{m.age === 1 ? "" : "s"} old · revenue {fmt(m.rev)}</div>
         </div>
         {tab === "dash" && <Dashboard p={profile} m={m} />}
+        {tab === "bench" && <BenchmarkPanel profile={profile} />}
         {tab === "fin" && <Financials m={m} />}
         {tab === "risk" && <Risk m={m} />}
         {tab === "ai" && <Advisor p={profile} m={m} />}

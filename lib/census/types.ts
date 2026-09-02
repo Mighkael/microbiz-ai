@@ -31,13 +31,15 @@ export function observed<T>(
   return { value, status: "observed", source, vintage, geography };
 }
 
-export function suppressed<T>(
+// T defaults to number: these carry no value to infer from, and almost every
+// figure in the platform is numeric.
+export function suppressed<T = number>(
   source: string, vintage: string, geography: string, note: string,
 ): DataPoint<T> {
   return { value: null, status: "suppressed", source, vintage, geography, note };
 }
 
-export function unavailable<T>(
+export function unavailable<T = number>(
   source: string, vintage: string, geography: string, note: string,
 ): DataPoint<T> {
   return { value: null, status: "unavailable", source, vintage, geography, note };
