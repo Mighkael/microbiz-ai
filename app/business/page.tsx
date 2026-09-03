@@ -50,8 +50,8 @@ const MODULES: Module[] = [
   {
     Icon: Lightbulb,
     title: "Opportunity Finder",
-    body: "Know your budget and location but not the business? Rank opportunities by fit.",
-    phase: "Phase 9",
+    body: "Know your budget and location but not the business? Rank sectors by how they perform in your county.",
+    href: "/business/opportunities",
   },
 ];
 

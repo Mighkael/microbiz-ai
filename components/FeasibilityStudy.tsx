@@ -59,9 +59,18 @@ const OUTLOOK: Record<StudyResponse["result"]["outlook"], { label: string; color
   },
 };
 
-export default function FeasibilityStudy() {
-  const [location, setLocation] = useState("");
-  const [industry, setIndustry] = useState("Restaurant / Food service");
+export default function FeasibilityStudy({
+  defaultLocation = "",
+  defaultIndustry = "Restaurant / Food service",
+}: {
+  defaultLocation?: string;
+  /** Set when arriving from the Opportunity Finder, so the sector carries over. */
+  defaultIndustry?: string;
+}) {
+  const [location, setLocation] = useState(defaultLocation);
+  const [industry, setIndustry] = useState(
+    defaultIndustry in INDUSTRIES ? defaultIndustry : "Restaurant / Food service",
+  );
   const [expectedRevenue, setExpectedRevenue] = useState("");
   const [employees, setEmployees] = useState("");
   const [startupCapital, setStartupCapital] = useState("");

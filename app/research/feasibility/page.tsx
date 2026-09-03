@@ -4,7 +4,18 @@ import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import FeasibilityStudy from "@/components/FeasibilityStudy";
 import Copyright from "@/components/Copyright";
 
-export default function FeasibilityPage() {
+/**
+ * `location` and `industry` may arrive in the query string when the user
+ * comes here from the Opportunity Finder, so the sector they picked carries
+ * over instead of being re-entered.
+ */
+export default async function FeasibilityPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ location?: string; industry?: string }>;
+}) {
+  const { location, industry } = await searchParams;
+
   return (
     <div style={{ maxWidth: 1080, margin: "0 auto", padding: "48px 24px 72px" }}>
       <Link href="/research" style={{
@@ -29,7 +40,7 @@ export default function FeasibilityPage() {
         report — how much they take in, what they spend on wages, and how crowded the field already is.
       </p>
 
-      <FeasibilityStudy />
+      <FeasibilityStudy defaultLocation={location ?? ""} defaultIndustry={industry ?? undefined} />
 
       <div style={{ fontSize: 11.5, color: C.mist, marginTop: 40, borderTop: `1px solid ${C.line}`, paddingTop: 14 }}>
         <Copyright /> · educational tool, not financial, legal, tax, or investment advice.
