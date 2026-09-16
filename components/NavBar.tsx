@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "./Logo";
 import { C, FONT_HEAD, NAV_H } from "@/lib/theme";
+import UtilityBar from "./UtilityBar";
 import { useAuth } from "./AuthProvider";
 import { createClient } from "@/lib/supabase/client";
 
@@ -72,6 +73,8 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
+    <>
+    <UtilityBar />
     <header className="mb-header" style={{
       height: NAV_H, borderBottom: `1px solid ${C.line}`, background: "#fff",
       position: "sticky", top: 0, zIndex: 30, boxSizing: "border-box",
@@ -93,5 +96,6 @@ export default function NavBar() {
         <AuthControls />
       </div>
     </header>
+    </>
   );
 }

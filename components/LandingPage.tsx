@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronRight, TrendingUp, Users } from "lucide-react";
-import { C, FONT_HEAD, FONT_MONO, NAV_H } from "@/lib/theme";
+import { C, FONT_HEAD, FONT_MONO, NAV_H, UTILITY_H } from "@/lib/theme";
 import UsMapBackdrop from "./UsMapBackdrop";
 import Copyright from "./Copyright";
 
@@ -30,7 +30,7 @@ export default function LandingPage() {
       {/* hero */}
       <section style={{
         position: "relative",
-        minHeight: `calc(100vh - ${NAV_H}px)`,
+        minHeight: `calc(100vh - ${NAV_H + UTILITY_H}px)`,
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "72px 24px", overflow: "hidden",
       }}>

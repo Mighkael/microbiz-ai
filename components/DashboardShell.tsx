@@ -10,7 +10,7 @@ import {
   LayoutDashboard, Calculator, ShieldAlert, Sparkles, Landmark, Newspaper,
   Rocket, TrendingUp, TrendingDown, RefreshCw, Send, Globe2, Users,
 } from "lucide-react";
-import { C, FONT_HEAD, FONT_MONO, FONT_BODY, NAV_H, fmt, pct } from "@/lib/theme";
+import { C, FONT_HEAD, FONT_MONO, FONT_BODY, NAV_H, UTILITY_H, fmt, pct } from "@/lib/theme";
 import { FUNDING, BANKS, WORLD } from "@/lib/data";
 import type { Profile, Metrics, ChatMessage } from "@/lib/data";
 import { useMetrics } from "@/lib/useMetrics";
@@ -379,7 +379,7 @@ export default function DashboardShell({ profile }: { profile: Profile }) {
   const sideTop = NAV_H;
 
   return (
-    <div style={{ minHeight: `calc(100vh - ${NAV_H}px)`, background: C.paper, display: "flex", fontFamily: FONT_BODY }}>
+    <div style={{ minHeight: `calc(100vh - ${NAV_H + UTILITY_H}px)`, background: C.paper, display: "flex", fontFamily: FONT_BODY }}>
       <style>{`
         .spin { animation: sp 1s linear infinite; } @keyframes sp { to { transform: rotate(360deg); } }
         @media (max-width: 820px) { .mb-side { display: none !important; } .mb-topnav { display: flex !important; } }

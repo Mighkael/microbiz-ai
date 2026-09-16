@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+/* Tailwind's reset makes every <svg> display:block, which drops each icon
+   onto its own line above the text beside it ("icon, then label" buttons and
+   headings throughout the site). Icons here are written to sit inline with
+   text, so restore that. Unlayered, so it wins over the reset. */
+svg.lucide { display: inline-block; }
+
 :root {
   --background: #F4F6F5;
   --foreground: #16242E;
@@ -38,7 +44,10 @@ body {
     padding: 10px 16px !important;
   }
   .mb-nav > nav { justify-content: center; }
+  .mb-utility-inner { justify-content: center !important; }
 }
+
+.mb-utility-item:hover { color: #16242E !important; background: #fff !important; }
 
 /* Print / Save-as-PDF (§17). Strips the app chrome so a printed report is
    the content, not a screenshot of a website. */
