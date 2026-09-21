@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Compass, ClipboardList, MapPin, Lightbulb, Layers, FileSearch, MessageCircle, ShieldCheck,
+  Compass, ClipboardList, MapPin, Lightbulb, Layers, FileSearch, MessageCircle, ShieldCheck, Bot,
   ChevronLeft, ChevronRight, ArrowUpRight,
 } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
@@ -66,12 +66,20 @@ const STEPS: Step[] = [
     cta: "Browse sectors",
   },
   {
+    Icon: Bot,
+    eyebrow: "Learn AI",
+    title: "AI Readiness & Roadmap",
+    body: "A short set of questions about how your business runs today gives you the AI uses that fit it, how to learn them, and a 90-day plan — starting from free tools if that's what you have.",
+    href: "/business/ai-roadmap",
+    cta: "Build my AI plan",
+  },
+  {
     Icon: MessageCircle,
-    eyebrow: "Ask",
-    title: "Ask MicroBiz AI",
-    body: "Ask a question in plain English. The advisor looks up real Census figures to answer, and shows you the evidence it used.",
+    eyebrow: "Every month",
+    title: "The MicroBiz Agent",
+    body: "Choose an Executive, Financial, Compliance or Strategy assistant. Give it your plan and monthly results, and it compares plan with actual, forecasts the year, flags deadlines and builds reports for a bank or investor.",
     href: "/ask",
-    cta: "Ask a question",
+    cta: "Open the agent",
   },
   {
     Icon: ShieldCheck,

@@ -1,6 +1,6 @@
 import {
   ClipboardList, LayoutDashboard, MapPin, SlidersHorizontal,
-  Users, Truck, Landmark, Lightbulb,
+  Users, Truck, Landmark, Lightbulb, Bot, Activity,
 } from "lucide-react";
 import WorkspaceIndex, { type Module } from "@/components/WorkspaceIndex";
 
@@ -52,6 +52,18 @@ const MODULES: Module[] = [
     title: "Opportunity Finder",
     body: "Know your budget and location but not the business? Rank sectors by how they perform in your county.",
     href: "/business/opportunities",
+  },
+  {
+    Icon: Bot,
+    title: "AI Readiness & Roadmap",
+    body: "Find out where AI can genuinely help your kind of business, how to learn it, and a 90-day plan to start — from the tools and budget you have today.",
+    href: "/business/ai-roadmap",
+  },
+  {
+    Icon: Activity,
+    title: "MicroBiz Agent",
+    body: "Give it your plan and monthly results: it tracks plan against actual, forecasts the year, warns you about deadlines, and builds lender and investor reports.",
+    href: "/ask?tab=monitor",
   },
 ];
 

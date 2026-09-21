@@ -60,3 +60,6 @@ body {
   .print-area > * { break-inside: avoid; page-break-inside: avoid; margin-bottom: 16px; }
   a[href]::after { content: ""; }
 }
+
+/* Keyboard focus for the custom switches in the MicroBiz Agent. */
+.mb-toggle:focus-within > span:first-of-type { outline: 2px solid #0E7B5F; outline-offset: 2px; }

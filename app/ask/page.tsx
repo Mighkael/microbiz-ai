@@ -1,79 +1,43 @@
-"use client";
-
-import { useState } from "react";
-import { Send, RefreshCw } from "lucide-react";
-import { C, FONT_HEAD } from "@/lib/theme";
-import { DEFAULT_PROFILE } from "@/lib/data";
-import type { ChatMessage } from "@/lib/data";
-import type { Evidence } from "@/lib/api";
-import { useMetrics } from "@/lib/useMetrics";
-import { askAdvisor } from "@/lib/api";
-import { Card, Btn, inputStyle } from "@/components/ui";
-import { useProfileContext } from "@/components/ProfileProvider";
-import Markdown from "@/components/Markdown";
-import EvidenceTrail from "@/components/EvidenceTrail";
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
+import AgentWorkspace from "@/components/agent/AgentWorkspace";
 import Copyright from "@/components/Copyright";
 
+export const metadata: Metadata = {
+  title: "MicroBiz Agent · MicroBiz AI",
+};
+
+/**
+ * Ask MicroBiz AI, grown into the MicroBiz Agent (V3 §2): an assistant in four
+ * roles that also holds the owner's plan, actual results and obligations, and
+ * checks one against the other.
+ */
 export default function AskPage() {
-  const { profile: saved } = useProfileContext();
-  const profile = saved ?? DEFAULT_PROFILE;
-  const m = useMetrics(profile);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [evidence, setEvidence] = useState<Record<number, Evidence[]>>({});
-  const [input, setInput] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  async function send(text: string) {
-    if (!text.trim() || busy) return;
-    const history = messages;
-    setMessages([...history, { role: "user", text }]); setInput(""); setBusy(true);
-    try {
-      const { reply, evidence: used } = await askAdvisor(profile, m, text, history);
-      setMessages((cur) => {
-        const next = [...cur, { role: "ai" as const, text: reply || "No response — please try again." }];
-        setEvidence((e) => ({ ...e, [next.length - 1]: used }));
-        return next;
-      });
-    } catch (err) {
-      setMessages((cur) => [...cur, { role: "ai", text: err instanceof Error ? err.message : "Connection error. Please try again." }]);
-    }
-    setBusy(false);
-  }
-
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto", padding: "48px 24px" }}>
-      <h1 style={{ fontFamily: FONT_HEAD, fontSize: 30, color: C.ink, margin: "0 0 6px" }}>Ask MicroBiz AI</h1>
-      <p style={{ color: C.mist, marginBottom: 24 }}>
-        {saved
-          ? "Answers are grounded in your saved business profile."
-          : "General small-business guidance for now — complete the assessment for advice tailored to your own numbers."}
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "44px 24px 72px" }}>
+      <div style={{
+        fontFamily: FONT_MONO, fontSize: 11.5, letterSpacing: "0.18em",
+        textTransform: "uppercase", color: C.ledger, fontWeight: 600, marginBottom: 12,
+      }}>MicroBiz Agent</div>
+
+      <h1 style={{
+        fontFamily: FONT_HEAD, fontSize: "clamp(28px, 4.5vw, 38px)", lineHeight: 1.12,
+        letterSpacing: "-0.02em", color: C.ink, margin: "0 0 12px",
+      }}>Ask MicroBiz AI</h1>
+
+      <p style={{ color: C.mist, fontSize: 15.5, maxWidth: 680, margin: "0 0 28px", lineHeight: 1.6 }}>
+        An assistant for running the business. Ask it anything — or give it your plan and your monthly results, and it
+        will compare them, warn you when you&apos;re off track or a deadline is close, recommend what to do, and build
+        reports for a bank or an investor.
       </p>
-      <Card>
-        <div style={{ maxHeight: 480, overflowY: "auto", display: "grid", gap: 10, marginBottom: 12 }}>
-          {messages.length === 0 && (
-            <div style={{ color: C.mist, fontSize: 14, background: C.paper, borderRadius: 8, padding: 16 }}>
-              Ask about pricing, hiring, financing, marketing — anything on your mind.
-            </div>
-          )}
-          {messages.map((mm, i) => (
-            <div key={i} style={{
-              justifySelf: mm.role === "user" ? "end" : "start", maxWidth: "85%",
-              background: mm.role === "user" ? C.ink : C.paper, color: mm.role === "user" ? "#fff" : C.ink,
-              borderRadius: 10, padding: "10px 14px", fontSize: 14, lineHeight: 1.5,
-            }}>
-              {mm.role === "ai" ? <Markdown>{mm.text}</Markdown> : <span style={{ whiteSpace: "pre-wrap" }}>{mm.text}</span>}
-              {mm.role === "ai" && <EvidenceTrail evidence={evidence[i] ?? []} />}
-            </div>
-          ))}
-          {busy && <div style={{ color: C.mist, fontSize: 13 }}><RefreshCw size={13} style={{ verticalAlign: -2 }} className="spin" /> Thinking…</div>}
-        </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <input style={{ ...inputStyle, flex: 1 }} value={input} onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send(input)} placeholder="e.g., Should I raise my prices 5%?" />
-          <Btn tone="green" onClick={() => send(input)} disabled={busy}><Send size={15} /></Btn>
-        </div>
-      </Card>
-      <div style={{ fontSize: 11.5, color: C.mist, marginTop: 20 }}>
+
+      {/* The workspace reads ?tab= and ?assistant= from the URL. */}
+      <Suspense fallback={<div style={{ color: C.mist, fontSize: 14 }}>Loading…</div>}>
+        <AgentWorkspace />
+      </Suspense>
+
+      <div style={{ fontSize: 11.5, color: C.mist, marginTop: 40, borderTop: `1px solid ${C.line}`, paddingTop: 14 }}>
         <Copyright /> · educational tool, not financial, legal, tax, or investment advice.
       </div>
     </div>
