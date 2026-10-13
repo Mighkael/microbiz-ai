@@ -8,7 +8,7 @@ import {
 } from "recharts";
 import {
   LayoutDashboard, Calculator, ShieldAlert, Sparkles, Landmark, Newspaper,
-  Rocket, TrendingUp, TrendingDown, RefreshCw, Send, Globe2, Users,
+  Rocket, TrendingUp, TrendingDown, RefreshCw, Send, Globe2, Users, HeartPulse,
 } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO, FONT_BODY, NAV_H, UTILITY_H, fmt, pct } from "@/lib/theme";
 import { FUNDING, BANKS, WORLD } from "@/lib/data";
@@ -21,6 +21,7 @@ import OpportunitiesPanel from "./OpportunitiesPanel";
 import LocationInsight from "./LocationInsight";
 import Markdown from "./Markdown";
 import BenchmarkPanel from "./BenchmarkPanel";
+import CommunityPanel from "./CommunityPanel";
 import EvidenceTrail from "./EvidenceTrail";
 import Copyright from "./Copyright";
 
@@ -369,6 +370,7 @@ const TABS = [
   { id: "ai", label: "AI Advisor", icon: Sparkles },
   { id: "fund", label: "Funding", icon: Landmark },
   { id: "news", label: "News & Markets", icon: Newspaper },
+  { id: "community", label: "Community", icon: HeartPulse },
   { id: "opp", label: "Opportunities", icon: Rocket },
 ] as const;
 
@@ -435,6 +437,11 @@ export default function DashboardShell({ profile }: { profile: Profile }) {
         {tab === "ai" && <Advisor p={profile} m={m} />}
         {tab === "fund" && <Funding p={profile} m={m} />}
         {tab === "news" && <NewsPanel p={profile} />}
+        {tab === "community" && (
+          profile.location
+            ? <CommunityPanel location={profile.location} industry={profile.industry} heading="The community you trade in" />
+            : <Card><div style={{ fontSize: 13.5, color: C.mist }}>Add your location in the assessment to see who lives in your market.</div></Card>
+        )}
         {tab === "opp" && <OpportunitiesPanel p={profile} />}
         <div style={{ fontSize: 11.5, color: C.mist, marginTop: 28, borderTop: `1px solid ${C.line}`, paddingTop: 12 }}>
           <Copyright /> · estimates based on your inputs and industry averages · educational tool, not financial, legal, tax, or investment advice.

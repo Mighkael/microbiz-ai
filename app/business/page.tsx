@@ -1,6 +1,6 @@
 import {
   ClipboardList, LayoutDashboard, MapPin, SlidersHorizontal,
-  Users, Truck, Landmark, Lightbulb, Bot, Activity,
+  Users, Truck, Landmark, Lightbulb, Bot, Activity, HeartPulse,
 } from "lucide-react";
 import WorkspaceIndex, { type Module } from "@/components/WorkspaceIndex";
 
@@ -64,6 +64,12 @@ const MODULES: Module[] = [
     title: "MicroBiz Agent",
     body: "Give it your plan and monthly results: it tracks plan against actual, forecasts the year, warns you about deadlines, and builds lender and investor reports.",
     href: "/ask?tab=monitor",
+  },
+  {
+    Icon: HeartPulse,
+    title: "Community & Conditions",
+    body: "Who lives around you, community health, disaster history and climate — the conditions behind the numbers, and what they mean for your kind of business.",
+    href: "/data/community",
   },
 ];
 

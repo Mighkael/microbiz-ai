@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Table, LineChart, Layers, Download } from "lucide-react";
+import { Table, LineChart, Layers, Download, HeartPulse } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import MarketSnapshot from "@/components/MarketSnapshot";
 import Copyright from "@/components/Copyright";
@@ -28,6 +28,12 @@ const TOOLS = [
     title: "Download",
     body: "Export any extract to CSV or Word with its source attribution, vintage and methodology attached.",
     href: "/research/data-lab",
+  },
+  {
+    Icon: HeartPulse,
+    title: "Community & Conditions",
+    body: "Who lives in a place, community health, disaster history and climate — and what each of those might mean for a business there.",
+    href: "/data/community",
   },
 ];
 

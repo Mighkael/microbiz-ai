@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import { Card, H, Btn, inputStyle } from "./ui";
+import CommunityPanel from "./CommunityPanel";
 
 type Factor = {
   key: string;
@@ -269,6 +270,9 @@ export default function OpportunityFinder({ defaultLocation = "" }: { defaultLoc
               </div>
             </Card>
           )}
+
+          {/* The ranking says what performs here; this says who lives here. */}
+          <CommunityPanel location={location} compact heading="What else to know about this community" />
 
           <Card>
             <div style={{ display: "flex", gap: 7, alignItems: "flex-start" }}>

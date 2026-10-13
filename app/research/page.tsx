@@ -1,4 +1,4 @@
-import { FileSearch, GitCompare, FlaskConical, FileText } from "lucide-react";
+import { FileSearch, GitCompare, FlaskConical, FileText, HeartPulse } from "lucide-react";
 import WorkspaceIndex, { type Module } from "@/components/WorkspaceIndex";
 
 const MODULES: Module[] = [
@@ -25,6 +25,12 @@ const MODULES: Module[] = [
     title: "Report Builder",
     body: "Export any Data Lab extract to Word or CSV with its sources, methodology and limitations attached.",
     href: "/research/data-lab",
+  },
+  {
+    Icon: HeartPulse,
+    title: "Community & Conditions",
+    body: "Population structure, community health, hazard history and climate for any county — the context a feasibility study sits inside.",
+    href: "/data/community",
   },
 ];
 

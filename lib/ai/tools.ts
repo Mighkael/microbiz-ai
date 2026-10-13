@@ -19,6 +19,8 @@ import { scoreLocation } from "@/lib/locationScore";
 import { buildComparisons, positionScore } from "@/lib/benchmarks";
 import { assessFeasibility } from "@/lib/feasibility";
 import type { DataPoint } from "@/lib/census/types";
+import { getCommunityProfile } from "@/lib/community";
+import { deriveImplications, IMPLICATION_CAVEAT } from "@/lib/community/implications";
 
 const INDUSTRIES = Object.keys(INDUSTRY_TO_NAICS);
 
@@ -99,6 +101,24 @@ export const TOOLS: Anthropic.Tool[] = [
       required: ["location", "industry"],
     },
   },
+  {
+    name: "get_community_profile",
+    description:
+      "The community a business would operate in: age structure, income, poverty, vehicle access and broadband " +
+      "(Census ACS); community health estimates such as diabetes, obesity, smoking and uninsured rates (CDC PLACES); " +
+      "federally declared disasters over the last 20 years (FEMA); and climate normals (NOAA). Use for questions " +
+      "about who lives somewhere, local health or demographics, weather or disaster risk, or what kind of business a " +
+      "place might need. The figures describe the county, and health figures are model-based estimates. They do NOT " +
+      "measure demand for any product — treat them as context to test, never as proof that something will or won't sell.",
+    input_schema: {
+      type: "object",
+      properties: {
+        location: { type: "string", description: "City and state, or ZIP code." },
+        industry: { type: "string", enum: INDUSTRIES, description: "Optional: tailors what the conditions might mean." },
+      },
+      required: ["location"],
+    },
+  },
 ];
 
 type ToolInput = Record<string, unknown>;
@@ -107,6 +127,41 @@ type ToolInput = Record<string, unknown>;
 export async function runTool(name: string, input: ToolInput): Promise<unknown> {
   const industry = String(input.industry ?? "Other");
   const sector = naicsForIndustry(industry);
+
+  if (name === "get_community_profile") {
+    const geo = await resolveGeography(String(input.location ?? ""));
+    if (!geo?.countyFips) return { error: `Could not resolve "${input.location}" to a US county.` };
+
+    const profile = await getCommunityProfile(geo, new Date().toISOString().slice(0, 10));
+    if (!profile) return { error: "No community figures are published for that county." };
+
+    const chosen = typeof input.industry === "string" && INDUSTRIES.includes(input.industry) ? input.industry : undefined;
+    const flatten = (groups: { label: string; indicators: { label: string; value: number | null; national: number | null; comparison: string | null }[] }[]) =>
+      Object.fromEntries(groups.flatMap((g) => g.indicators.map((i) =>
+        [i.label, { value: i.value, national: i.national, vs_national: i.comparison }])));
+
+    return {
+      county: profile.geography.label,
+      population: profile.population,
+      people: flatten(profile.people),
+      health_model_based_estimates: flatten(profile.health),
+      declared_disasters_last_20_years: profile.hazards && {
+        total: profile.hazards.total,
+        by_type: profile.hazards.types.map((t) => `${t.type}: ${t.count} (latest ${t.latestYear})`),
+      },
+      climate_normals_1991_2020: profile.climate && {
+        station: profile.climate.station.name,
+        warmest_month_avg_f: profile.climate.warmest?.avgTempF ?? null,
+        coldest_month_avg_f: profile.climate.coldest?.avgTempF ?? null,
+        annual_precipitation_inches: profile.climate.annualPrecipIn,
+      },
+      what_this_might_mean: deriveImplications(profile, chosen).map((i) => ({
+        kind: i.kind, point: i.title, based_on: i.basis, consider: i.consider,
+      })),
+      caveat: IMPLICATION_CAVEAT,
+      sources: profile.sources,
+    };
+  }
 
   if (name === "get_market_snapshot") {
     const geo = await resolveGeography(String(input.location ?? ""));

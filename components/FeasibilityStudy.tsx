@@ -6,6 +6,7 @@ import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import { INDUSTRIES } from "@/lib/data";
 import { Card, H, Btn, Field, inputStyle } from "./ui";
 import Markdown from "./Markdown";
+import CommunityPanel from "./CommunityPanel";
 
 type CheckStatus = "strong" | "workable" | "stretch" | "unknown";
 
@@ -207,6 +208,14 @@ export default function FeasibilityStudy({
               </div>
             </Card>
           )}
+
+          {/* The market says whether the numbers work; the community says who they'd work among. */}
+          <CommunityPanel
+            location={location}
+            industry={industry}
+            compact
+            heading="The community you'd be trading in"
+          />
 
           <div style={{ fontSize: 11.5, color: C.mist, lineHeight: 1.6 }}>
             This study compares your assumptions against published Census figures for businesses already operating in

@@ -5,6 +5,7 @@ import { Info, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import type { Profile } from "@/lib/data";
 import { Card, H, inputStyle } from "./ui";
+import Link from "next/link";
 
 type DataPoint = {
   value: number | null;
@@ -186,6 +187,13 @@ export default function BenchmarkPanel({ profile }: { profile: Profile }) {
               {result.sector.benchmarkNote ? `${result.sector.benchmarkNote} ` : ""}
               Profit margin is deliberately not benchmarked here: no free federal source publishes profit by sector and
               area, so any such figure would be an estimate rather than a measurement.
+            </div>
+            <div style={{ fontSize: 12.5, color: C.mist, marginTop: 10 }}>
+              These compare you with other businesses. For the community you sell into — ages, incomes, health,
+              hazards and climate — see{" "}
+              <Link href={`/data/community?location=${encodeURIComponent(profile.location)}&industry=${encodeURIComponent(profile.industry)}`} style={{ color: C.ledger, fontWeight: 600 }}>
+                Community &amp; Conditions
+              </Link>.
             </div>
           </div>
         </>

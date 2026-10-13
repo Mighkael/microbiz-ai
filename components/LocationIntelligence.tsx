@@ -5,6 +5,7 @@ import { MapPin, Plus, X, Search, TrendingUp, TrendingDown, Minus } from "lucide
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import { INDUSTRIES } from "@/lib/data";
 import { Card, H, Btn, inputStyle } from "./ui";
+import CommunityPanel from "./CommunityPanel";
 import ComparisonMap, { PIN_COLORS, type MapPoint } from "./ComparisonMap";
 
 type Factor = {
@@ -217,6 +218,15 @@ export default function LocationIntelligence() {
             );
           })}
         </div>
+      )}
+
+      {data && locations[0]?.trim() && (
+        <CommunityPanel
+          location={locations[0]}
+          industry={industry}
+          compact
+          heading={`Beyond the score: the community in ${locations[0]}`}
+        />
       )}
 
       {data && (

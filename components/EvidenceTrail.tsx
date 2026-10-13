@@ -10,6 +10,7 @@ const TOOL_LABELS: Record<string, string> = {
   benchmark_business: "Business benchmark",
   score_locations: "Location scoring",
   run_feasibility_study: "Feasibility study",
+  get_community_profile: "Community & conditions",
 };
 
 function describe(e: Evidence): string {

@@ -5,6 +5,7 @@ import { Search, Info } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import { INDUSTRIES } from "@/lib/data";
 import { Card, H, Btn, inputStyle } from "./ui";
+import CommunityPanel from "./CommunityPanel";
 
 type DataPoint = {
   value: number | null;
@@ -100,7 +101,8 @@ export default function MarketSnapshot() {
   }
 
   return (
-    <Card>
+    <>
+      <Card>
       <H>Market snapshot</H>
       <div style={{ fontSize: 13, color: C.mist, margin: "4px 0 16px", maxWidth: 620, lineHeight: 1.55 }}>
         Live figures from the US Census Bureau for any city or ZIP code — who lives there, and how many businesses
@@ -176,5 +178,17 @@ export default function MarketSnapshot() {
         </div>
       )}
     </Card>
+
+      {result && (
+        <div style={{ marginTop: 16 }}>
+          <CommunityPanel
+            location={location}
+            industry={industry}
+            compact
+            heading="Who lives in this market"
+          />
+        </div>
+      )}
+    </>
   );
 }
