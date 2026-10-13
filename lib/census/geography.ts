@@ -33,24 +33,85 @@ type NominatimHit = {
   lat: string;
   lon: string;
   display_name: string;
-  address?: { postcode?: string };
+  boundingbox?: [string, string, string, string];
+  address?: { postcode?: string; country_code?: string };
 };
 
-async function geocode(query: string): Promise<NominatimHit | null> {
+export type UsGeocode = {
+  lat: number;
+  lon: number;
+  displayName: string;
+  /** south, north, west, east — as Nominatim orders it. */
+  boundingBox: [number, number, number, number] | null;
+  postcode: string | null;
+};
+
+/**
+ * Is this point actually in the United States?
+ *
+ * The last guard against a lookup landing abroad. Covers the lower 48,
+ * Alaska (including the Aleutians, which cross the antimeridian into
+ * positive longitudes), Hawaii, Puerto Rico and the Virgin Islands.
+ */
+function inUnitedStates(lat: number, lon: number): boolean {
+  if (lat < 15 || lat > 72) return false;
+  return (lon >= -180 && lon <= -64) || (lon >= 172 && lon <= 180);
+}
+
+/**
+ * Free-text place to coordinates, restricted to the United States.
+ *
+ * Used by every map and every data lookup, because the alternative — each
+ * caller writing its own Nominatim query — is how a bare ZIP code came to be
+ * geocoded to a postcode in Ukraine and drawn on the map.
+ *
+ * A five-digit ZIP is sent as a postal-code lookup rather than free text:
+ * "37040" as a search term matches postcodes all over the world, while
+ * postalcode=37040&country=us can only match in the US.
+ */
+export async function geocodeUS(query: string): Promise<UsGeocode | null> {
+  const trimmed = query.trim();
+  if (trimmed.length < 3) return null;
+
+  const zip = trimmed.match(ZIP_RE)?.[1] ?? null;
   const url = new URL("https://nominatim.openstreetmap.org/search");
-  url.searchParams.set("q", query);
+  if (zip) {
+    url.searchParams.set("postalcode", zip);
+    url.searchParams.set("country", "us");
+  } else {
+    url.searchParams.set("q", trimmed);
+    url.searchParams.set("countrycodes", "us");
+  }
   url.searchParams.set("format", "json");
   url.searchParams.set("limit", "1");
   url.searchParams.set("addressdetails", "1");
-  url.searchParams.set("countrycodes", "us");
 
   const res = await fetch(url, {
     headers: { "User-Agent": "MicroBizAI/1.0 (https://www.microbiz-ai.com)" },
     next: { revalidate: DAY },
   });
   if (!res.ok) return null;
+
   const hits = (await res.json()) as NominatimHit[];
-  return hits[0] ?? null;
+  const hit = hits[0];
+  if (!hit) return null;
+
+  const lat = Number(hit.lat);
+  const lon = Number(hit.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  // Belt and braces: the filters above should make this impossible.
+  if (!inUnitedStates(lat, lon)) return null;
+
+  const box = hit.boundingbox?.map(Number);
+  return {
+    lat,
+    lon,
+    displayName: hit.display_name,
+    boundingBox: box && box.length === 4 && box.every(Number.isFinite)
+      ? (box as [number, number, number, number])
+      : null,
+    postcode: zip ?? hit.address?.postcode?.slice(0, 5) ?? null,
+  };
 }
 
 type CensusGeoLayer = { NAME?: string; STATE?: string; COUNTY?: string; BASENAME?: string };
@@ -89,24 +150,18 @@ export async function resolveGeography(query: string): Promise<ResolvedGeography
   const trimmed = query.trim();
   if (trimmed.length < 3) return null;
 
-  const zipMatch = trimmed.match(ZIP_RE);
-  // Nominatim resolves a bare ZIP more reliably when told it's a postal code.
-  const hit = await geocode(zipMatch ? `${zipMatch[1]}, USA` : trimmed);
+  const hit = await geocodeUS(trimmed);
   if (!hit) return null;
 
-  const lat = Number(hit.lat);
-  const lon = Number(hit.lon);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
-
-  const fips = await coordsToFips(lat, lon);
+  const fips = await coordsToFips(hit.lat, hit.lon);
   if (!fips) return null;
 
   return {
     query: trimmed,
-    displayName: hit.display_name,
-    lat,
-    lon,
+    displayName: hit.displayName,
+    lat: hit.lat,
+    lon: hit.lon,
     ...fips,
-    zip: zipMatch ? zipMatch[1] : hit.address?.postcode?.slice(0, 5) ?? null,
+    zip: hit.postcode,
   };
 }

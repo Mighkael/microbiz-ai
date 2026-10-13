@@ -14,29 +14,9 @@
 // not a full picture of a neighborhood.
 
 import { NextRequest, NextResponse } from "next/server";
+import { geocodeUS } from "@/lib/census/geography";
 
-const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
 const OZ_LAYER_URL = "https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/13/query";
-
-type GeocodeResult = {
-  lat: number;
-  lon: number;
-  displayName: string;
-  boundingBox: [number, number, number, number]; // south, north, west, east
-};
-
-async function geocode(q: string): Promise<GeocodeResult | null> {
-  const url = `${NOMINATIM_URL}?q=${encodeURIComponent(q)}&format=json&limit=1&addressdetails=0`;
-  const res = await fetch(url, {
-    headers: { "User-Agent": "MicroBizAI/0.1 (small-business dashboard prototype)" },
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  const hit = Array.isArray(data) ? data[0] : null;
-  if (!hit) return null;
-  const [south, north, west, east] = hit.boundingbox.map((n: string) => parseFloat(n));
-  return { lat: parseFloat(hit.lat), lon: parseFloat(hit.lon), displayName: hit.display_name, boundingBox: [south, north, west, east] };
-}
 
 type OZResult = {
   designated: boolean;
@@ -75,8 +55,13 @@ export async function GET(req: NextRequest) {
   if (!q) return NextResponse.json({ error: "Missing location query." }, { status: 400 });
 
   try {
-    const place = await geocode(q);
-    if (!place) return NextResponse.json({ error: "Location not found." }, { status: 404 });
+    const place = await geocodeUS(q);
+    if (!place) {
+      return NextResponse.json(
+        { error: `Couldn't find "${q}" in the United States. Try a city and state, or a 5-digit ZIP code.` },
+        { status: 404 },
+      );
+    }
 
     const oz = await checkOpportunityZone(place.lat, place.lon);
 
