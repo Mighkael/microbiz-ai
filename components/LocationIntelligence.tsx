@@ -5,7 +5,7 @@ import { MapPin, Plus, X, Search, TrendingUp, TrendingDown, Minus } from "lucide
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import { INDUSTRIES } from "@/lib/data";
 import { Card, H, Btn, inputStyle } from "./ui";
-import CommunityPanel from "./CommunityPanel";
+import CommunityCompare from "./CommunityCompare";
 import ComparisonMap, { PIN_COLORS, type MapPoint } from "./ComparisonMap";
 
 type Factor = {
@@ -220,12 +220,12 @@ export default function LocationIntelligence() {
         </div>
       )}
 
-      {data && locations[0]?.trim() && (
-        <CommunityPanel
-          location={locations[0]}
+      {data && (
+        <CommunityCompare
+          locations={locations.filter((l) => l.trim().length >= 3)}
           industry={industry}
-          compact
-          heading={`Beyond the score: the community in ${locations[0]}`}
+          marketScores={Object.fromEntries(data.results.map((r) => [r.query, r.score?.score ?? null]))}
+          heading="Beyond the score: the communities compared"
         />
       )}
 

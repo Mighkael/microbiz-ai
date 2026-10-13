@@ -33,7 +33,11 @@ const VARS = {
   noVehicle: "DP04_0058PE",
   renters: "DP04_0047PE",
   englishOnly: "DP02_0113PE",
+  laborForce: "DP03_0002PE",
 } as const;
+
+/** Five years earlier, for population change. The windows don't overlap. */
+const THEN_VINTAGE = "2018";
 
 type Key = keyof typeof VARS;
 type Row = Partial<Record<Key, number | null>>;
@@ -64,14 +68,48 @@ async function fetchProfile(forClause: string, inClause?: string): Promise<Row |
 /** "Speak a language other than English at home" is the complement of what ACS publishes. */
 const otherLanguage = (englishOnly: number | null) => (englishOnly == null ? null : Math.round((100 - englishOnly) * 10) / 10);
 
+async function fetchPopulationThen(forClause: string, inClause?: string): Promise<number | null> {
+  const url = new URL(`https://api.census.gov/data/${THEN_VINTAGE}/acs/acs5/profile`);
+  url.searchParams.set("get", VARS.population);
+  url.searchParams.set("for", forClause);
+  if (inClause) url.searchParams.set("in", inClause);
+  url.searchParams.set("key", process.env.CENSUS_API_KEY ?? "");
+  const res = await fetch(url, { next: { revalidate: DAY } });
+  if (!res.ok) return null;
+  const text = await res.text();
+  if (!text.trim().startsWith("[")) return null;
+  const rows = JSON.parse(text) as string[][];
+  return rows.length < 2 ? null : num(rows[1][0]);
+}
+
+const growthPercent = (now: number | null, then: number | null) =>
+  now == null || then == null || then === 0 ? null : Math.round(((now - then) / then) * 1000) / 10;
+
+/** 18–64: the ages most likely to be working, and the local hiring pool. */
+const workingAge = (under18: number | null, over65: number | null) =>
+  under18 == null || over65 == null ? null : Math.round((100 - under18 - over65) * 10) / 10;
+
 export type PeopleResult = { groups: IndicatorGroup[]; population: number | null };
 
 export async function getPeople(stateFips: string, countyFips: string): Promise<PeopleResult | null> {
-  const [local, national] = await Promise.all([
+  const [local, national, localThen, nationalThen] = await Promise.all([
     fetchProfile(`county:${countyFips}`, `state:${stateFips}`),
     fetchProfile("us:1"),
+    fetchPopulationThen(`county:${countyFips}`, `state:${stateFips}`),
+    fetchPopulationThen("us:1"),
   ]);
   if (!local) return null;
+
+  const localGrowth = growthPercent(local.population ?? null, localThen);
+  const nationalGrowth = growthPercent(national?.population ?? null, nationalThen);
+  const localWorkingAge = workingAge(local.under18 ?? null, local.over65 ?? null);
+  const nationalWorkingAge = workingAge(national?.under18 ?? null, national?.over65 ?? null);
+  const derived = (
+    key: string, label: string, value: number | null, nat: number | null, note: string,
+  ): Indicator => ({
+    key, label, value, unit: "percent", national: nat,
+    comparison: compare(value, nat, "percent"), source: SOURCE, vintage: VINTAGE, note,
+  });
 
   const ind = (
     key: string, label: string, field: Key, unit: Indicator["unit"], note?: string,
@@ -98,6 +136,8 @@ export async function getPeople(stateFips: string, countyFips: string): Promise<
         ind("householdsWithChildren", "Households with children", "householdsWithChildren", "percent"),
         ind("householdSize", "Average household size", "householdSize", "people"),
         ind("veterans", "Veterans (adults)", "veterans", "percent"),
+        derived("populationGrowth", "Population change over five years", localGrowth, nationalGrowth,
+          `Calculated by MicroBiz AI from ACS ${THEN_VINTAGE} and ${VINTAGE} population. The two five-year windows don't overlap.`),
         {
           key: "otherLanguage",
           label: "Speak a language other than English at home",
@@ -117,8 +157,18 @@ export async function getPeople(stateFips: string, countyFips: string): Promise<
       indicators: [
         ind("medianIncome", "Median household income", "medianIncome", "dollars"),
         ind("poverty", "People below the poverty line", "poverty", "percent"),
-        ind("bachelors", "Adults with a bachelor's degree or higher", "bachelors", "percent"),
         ind("renters", "Homes that are rented", "renters", "percent"),
+      ],
+    },
+    {
+      key: "workforce",
+      label: "The people you could hire",
+      blurb: "Who is available to work, and what they bring — the other half of whether a business can run here.",
+      indicators: [
+        derived("workingAge", "Aged 18–64", localWorkingAge, nationalWorkingAge,
+          "Calculated by MicroBiz AI as everyone who is neither under 18 nor over 65."),
+        ind("laborForce", "Adults in the labor force", "laborForce", "percent"),
+        ind("bachelors", "Adults with a bachelor's degree or higher", "bachelors", "percent"),
       ],
     },
     {

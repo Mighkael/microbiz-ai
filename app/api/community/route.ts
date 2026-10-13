@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { resolveGeography } from "@/lib/census/geography";
 import { getCommunityProfile } from "@/lib/community";
 import { deriveImplications, IMPLICATION_CAVEAT } from "@/lib/community/implications";
+import { scoreCommunity } from "@/lib/community/score";
 import { INDUSTRIES } from "@/lib/data";
 
 export const maxDuration = 60;
@@ -57,6 +58,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       ...profile,
       industry: industry ?? null,
+      score: scoreCommunity(profile, industry),
       implications: deriveImplications(profile, industry),
       implicationCaveat: IMPLICATION_CAVEAT,
     });

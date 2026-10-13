@@ -12,11 +12,14 @@ import {
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
 import type { CommunityProfile, Indicator, IndicatorGroup } from "@/lib/community/types";
 import type { Implication } from "@/lib/community/implications";
+import type { CommunityScore } from "@/lib/community/score";
 import { HIGHER_IS_BETTER } from "@/lib/community/health";
 import { Card, H } from "./ui";
+import CommunityScoreBlock from "./CommunityScoreBlock";
 
 type Response = CommunityProfile & {
   industry: string | null;
+  score: CommunityScore | null;
   implications: Implication[];
   implicationCaveat: string;
 };
@@ -188,6 +191,19 @@ export default function CommunityPanel({
           </div>
         </div>
 
+        {data.score && (
+          <div style={{ marginTop: 14 }}>
+            <CommunityScoreBlock
+              score={data.score}
+              compact={compact}
+              counts={{
+                opportunities: data.implications.filter((i) => i.kind === "opportunity").length,
+                challenges: data.implications.filter((i) => i.kind === "challenge").length,
+              }}
+            />
+          </div>
+        )}
+
         {data.implications.length > 0 ? (
           <>
             <div style={{ fontSize: 13, color: C.mist, margin: "6px 0 14px", lineHeight: 1.55, maxWidth: 700 }}>
@@ -313,6 +329,7 @@ export default function CommunityPanel({
                 </div>
                 <ul style={{ margin: 0, paddingLeft: 18, display: "grid", gap: 6 }}>
                   {data.limitations.map((l, i) => <li key={i} style={{ fontSize: 12.5, color: C.mist, lineHeight: 1.55 }}>{l}</li>)}
+                  {data.score?.method.map((m, i) => <li key={`m${i}`} style={{ fontSize: 12.5, color: C.mist, lineHeight: 1.55 }}>{m}</li>)}
                   {data.unavailable.length > 0 && (
                     <li style={{ fontSize: 12.5, color: C.alert, lineHeight: 1.55 }}>
                       Didn&apos;t load this time: {data.unavailable.join(", ").toLowerCase()}.
