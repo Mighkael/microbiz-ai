@@ -5,7 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import {
-  Search, TrendingUp, Users, ListChecks, UserCog, Info, Plus, Check, Trash2,
+  Search, TrendingUp, Users, ListChecks, UserCog, Info, Plus, Check, Trash2, Swords,
   ExternalLink, Mail, Phone, Download, ShieldAlert,
 } from "lucide-react";
 import { C, FONT_HEAD, FONT_MONO } from "@/lib/theme";
@@ -19,14 +19,16 @@ import {
 import { TARGET_CATEGORIES, SUGGESTED_TARGETS } from "@/lib/prospects/categories";
 import { Card, H, Btn, inputStyle } from "../ui";
 import OutreachDialog from "./OutreachDialog";
+import WeakSpotsTab from "./WeakSpotsTab";
 
 const STORAGE_KEY = "microbiz.prospects";
 const MAX_TARGETS = 4;
 
-type Tab = "demand" | "find" | "pipeline" | "details";
+type Tab = "demand" | "weakspots" | "find" | "pipeline" | "details";
 
 const TABS: { key: Tab; label: string; Icon: typeof Search }[] = [
   { key: "demand", label: "Is there demand?", Icon: TrendingUp },
+  { key: "weakspots", label: "Where rivals fall short", Icon: Swords },
   { key: "find", label: "Find prospects", Icon: Search },
   { key: "pipeline", label: "Pipeline", Icon: ListChecks },
   { key: "details", label: "Your details", Icon: UserCog },
@@ -678,6 +680,9 @@ export default function ProspectWorkspace({ profile }: { profile: Profile | null
 
       {tab === "demand" && (
         <DemandTab location={location} industry={industry} onLocation={setLocation} onIndustry={setIndustry} />
+      )}
+      {tab === "weakspots" && (
+        <WeakSpotsTab location={location} industry={industry} onLocation={setLocation} onIndustry={setIndustry} />
       )}
       {tab === "find" && (
         <FindTab location={location} industry={industry} inPipeline={inPipeline} onAdd={addProspect} />
