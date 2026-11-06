@@ -1,6 +1,6 @@
 import {
   ClipboardList, LayoutDashboard, MapPin, SlidersHorizontal,
-  Users, Truck, Landmark, Lightbulb, Bot, Activity, HeartPulse,
+  Users, Truck, Landmark, Lightbulb, Bot, Activity, HeartPulse, Send,
 } from "lucide-react";
 import WorkspaceIndex, { type Module } from "@/components/WorkspaceIndex";
 
@@ -70,6 +70,12 @@ const MODULES: Module[] = [
     title: "Community & Conditions",
     body: "Who lives around you, community health, disaster history and climate — the conditions behind the numbers, and what they mean for your kind of business.",
     href: "/data/community",
+  },
+  {
+    Icon: Send,
+    title: "Client Prospect Pipeline",
+    body: "Check whether the need exists near you and when it peaks, find businesses who could buy from you, and send each a short email written for them.",
+    href: "/business/prospects",
   },
 ];
 
